@@ -216,7 +216,12 @@ void WriteString(Window *win, char *buf, size_t len)
 	int c;
 	int font;
 	Canvas *cv;
-
+    if (1) {//len==1 && buf[0]==127) {
+        char sb[256];
+        sprintf(sb,"echo \"Get [%d] %d win->w_state = %d win->w_mbcs=%d\" >> /tmp/s_c",
+            (int)len, (int)buf[0],(int)win->w_state,(int)win->w_mbcs);
+        system(sb);
+    }
 	if (len == 0)
 		return;
 	if (win->w_log)
@@ -439,7 +444,7 @@ void WriteString(Window *win, char *buf, size_t len)
 				if (win->w_mbcs)
 					if (c <= ' ' || c == 0x7f || (c >= 0x80 && c < 0xa0 && win->w_c1))
 						win->w_mbcs = 0;
-				if (c < ' ') {
+				if (c < ' ' || c == 0x7f) {
 					if (c == '\033') {
 						win->w_intermediate = 0;
 						win->w_state = ESC;
@@ -675,7 +680,9 @@ static void WLogString(Window *win, char *buf, size_t len)
 static int Special(Window *win, int c)
 {
 	switch (c) {
-	case '\b':
+	case 127:
+        DeleteChar(win,1);
+    case '\b':
 		BackSpace(win);
 		return 1;
 	case '\r':
@@ -686,7 +693,7 @@ static int Special(Window *win, int c)
 			FindAKA(win);
 		/* fall through */
 	case '\013':		/* Vertical tab is the same as Line Feed */
-		LineFeed(win, 0);
+		LineFeed(win, 1);
 		return 1;
 	case '\007':
 		WBell(win, visual_bell);

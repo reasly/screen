@@ -194,12 +194,12 @@ void InitTTY(struct mode *m, int ttyflag)
  * sorry, this one is ridiculus. jw */
 
 	if (!ttyflag) {		/* may not even be good for ptys.. */
-#if defined(ICRNL)
+//#if defined(ICRNL)
 		m->tio.c_iflag |= ICRNL;
-#endif				/* ICRNL */
-#if defined(ONLCR)
+//#endif				/* ICRNL */
+//#if defined(ONLCR)
 		m->tio.c_oflag |= ONLCR;
-#endif				/* ONLCR */
+//#endif				/* ONLCR */
 #if defined(TAB3)
 		m->tio.c_oflag |= TAB3;
 #endif				/* TAB3 */
@@ -374,6 +374,9 @@ void InitTTY(struct mode *m, int ttyflag)
 void SetTTY(int fd, struct mode *mp)
 {
 	errno = 0;
+    //mp->tio.c_iflag |=  INLCR;
+    mp->tio.c_oflag |=  ONLCR;
+    
 	tcsetattr(fd, TCSADRAIN, &mp->tio);
 #if defined(TIOCKSET)
 	ioctl(fd, TIOCKSETC, &mp->m_jtchars);

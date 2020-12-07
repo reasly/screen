@@ -3,7 +3,6 @@ AC_PREREQ(2.60)
 
 AC_CONFIG_HEADERS([config.h])
 
-
 AC_DEFINE_UNQUOTED([VERSION_MAJOR], 
 	[`echo $PACKAGE_VERSION | cut -d . -f 1`],
 	[Major version of GNU screen])
